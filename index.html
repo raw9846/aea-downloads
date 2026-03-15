@@ -1,16 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AEA Downloads</title>
+  <meta charset="UTF-8">
+  <title>Download AEA</title>
+  <style>
+    body { background: #0f1117; color: #fff; font-family: sans-serif;
+           display: flex; flex-direction: column; align-items: center;
+           justify-content: center; min-height: 100vh; margin: 0; }
+    h1 { font-size: 3rem; margin-bottom: 0.25rem; }
+    .version { color: #888; margin-bottom: 2rem; }
+    .buttons { display: flex; gap: 1rem; }
+    a.btn { padding: 0.9rem 2rem; border-radius: 8px; text-decoration: none;
+            font-size: 1rem; font-weight: 600; }
+    .win { background: #0078d4; color: #fff; }
+    .linux { background: #e95420; color: #fff; }
+  </style>
 </head>
-
 <body>
-  <h1>AEA Downloads</h1>
-  <p>Download the latest version</p>
-
-  <a href="/releases/AEA-windows.zip">Windows</a><br>
-  <a href="/releases/AEA-linux.zip">Linux</a><br>
-  <a href="/releases/AEA-mac.zip">Mac</a>
-
+  <h1>AEA</h1>
+  <p class="version" id="ver">Loading...</p>
+  <div class="buttons">
+    <a class="btn win" id="win-btn" href="#">Download for Windows</a>
+    <a class="btn linux" id="linux-btn" href="#">Download for Linux</a>
+  </div>
+  <script>
+    fetch('/downloads.json')
+      .then(r => r.json())
+      .then(d => {
+        document.getElementById('ver').textContent = d.version;
+        document.getElementById('win-btn').href = d.windows;
+        document.getElementById('linux-btn').href = d.linux;
+      });
+  </script>
 </body>
 </html>
