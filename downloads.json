@@ -1,6 +1,6 @@
 {
-  "version": "v0.0.0",
-  "date": "2026-03-15",
-  "windows": "",
-  "linux": ""
+  "version": "v1.0.6",
+  "date": "2026-03-16",
+  "windows": "https://github.com/UsaidMalik/AEA/releases/download/v1.0.6/AEA.Setup.1.0.0.exe",
+  "linux": "https://github.com/UsaidMalik/AEA/releases/download/v1.0.6/AEA-1.0.0.AppImage"
 }
