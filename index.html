@@ -2,55 +2,590 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Download AEA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEA — AI Accountable Executive Assistant</title>
   <style>
-    body { background: #0f1117; color: #fff; font-family: sans-serif;
-           display: flex; flex-direction: column; align-items: center;
-           justify-content: center; min-height: 100vh; margin: 0; }
-    h1 { font-size: 3rem; margin-bottom: 0.25rem; }
-    .version { color: #888; margin-bottom: 2rem; }
-    .buttons { display: flex; gap: 1rem; }
-    a.btn { padding: 0.9rem 2rem; border-radius: 8px; text-decoration: none;
-            font-size: 1rem; font-weight: 600; }
-    .win { background: #0078d4; color: #fff; }
-    .linux { background: #e95420; color: #fff; }
-    .mac { background: #555; color: #fff; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --bg2: #161b22;
+      --bg3: #1c2128;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --accent: #58a6ff;
+      --win: #0078d4;
+      --linux: #e95420;
+      --mac: #a2a2a2;
+      --green: #3fb950;
+      --purple: #bc8cff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,17,23,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px;
+    }
+    .nav-logo { font-weight: 700; font-size: 1.1rem; letter-spacing: 0.05em; color: var(--text); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.875rem; transition: color .15s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      text-align: center;
+      padding: 6rem 2rem 5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(88,166,255,0.1);
+      border: 1px solid rgba(88,166,255,0.3);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+    }
+    .hero-version {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 1.25rem;
+    }
+
+    .download-btns {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      justify-content: center;
+    }
+    a.btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 1.75rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: opacity .15s, transform .1s;
+    }
+    a.btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    a.btn:active { transform: translateY(0); }
+    .win  { background: var(--win);   color: #fff; }
+    .mac  { background: #3a3a3a;      color: #fff; }
+    .linux{ background: var(--linux); color: #fff; }
+
+    /* SECTION LAYOUT */
+    section { max-width: 1000px; margin: 0 auto; padding: 4rem 2rem; }
+    section + section { border-top: 1px solid var(--border); }
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;
+    }
+    h2 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text); }
+    .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
+
+    /* FEATURE GRID */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .feature-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      transition: border-color .2s;
+    }
+    .feature-card:hover { border-color: var(--accent); }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+    .feature-card h3 { font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .feature-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+
+    /* ARCHITECTURE */
+    .arch-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+    .arch-box pre {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.8rem;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    /* INSTALL TABS */
+    .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .tab-btn {
+      background: none; border: none; color: var(--muted);
+      font-size: 0.875rem; font-weight: 500;
+      padding: 0.6rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; gap: 1rem; }
+    .step {
+      display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.25rem;
+    }
+    .step-num {
+      min-width: 28px; height: 28px;
+      background: var(--accent); color: #000;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+    }
+    .step-body { flex: 1; }
+    .step-body p { font-size: 0.9rem; color: var(--muted); margin-top: 0.2rem; }
+
+    /* CODE BLOCKS */
+    pre.code {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      color: #e6edf3;
+      overflow-x: auto;
+      margin-top: 0.75rem;
+      line-height: 1.6;
+    }
+    code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85em;
+      background: rgba(88,166,255,0.1);
+      color: var(--accent);
+      padding: 0.1em 0.35em;
+      border-radius: 4px;
+    }
+    .note {
+      background: rgba(63,185,80,0.08);
+      border: 1px solid rgba(63,185,80,0.25);
+      border-radius: 8px;
+      padding: 0.85rem 1.1rem;
+      font-size: 0.85rem;
+      color: #7ee787;
+      margin-top: 1rem;
+      line-height: 1.5;
+    }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th { text-align: left; padding: 0.65rem 1rem; color: var(--muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    td { padding: 0.65rem 1rem; border-bottom: 1px solid rgba(48,54,61,0.5); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+    /* TECH STACK PILLS */
+    .pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .pill {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 999px; padding: 0.3rem 0.85rem;
+      font-size: 0.8rem; color: var(--muted);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+      .hero { padding: 4rem 1.25rem 3rem; }
+      section { padding: 3rem 1.25rem; }
+    }
   </style>
 </head>
 <body>
-  <h1>AEA</h1>
-  <p class="version" id="ver">Loading...</p>
-  <div class="buttons">
-    <a class="btn win" id="win-btn" href="#">Download for Windows</a>
-    <a class="btn linux" id="linux-btn" href="#">Download for Linux</a>
-    <a class="btn mac" id="mac-btn" href="#">Download for macOS</a>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">AEA</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#docker">Docker</a></li>
+    <li><a href="#api">API</a></li>
+    <li><a href="https://github.com/UsaidMalik/AEA" target="_blank">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Open Source · Desktop App</div>
+  <h1><span>AI</span> Accountable<br>Executive Assistant</h1>
+  <p>Local session monitoring and accountability platform — tracks apps, browser domains, and facial expressions in real time, enforces focus policies, and delivers AI-powered productivity insights.</p>
+  <div class="download-btns">
+    <a class="btn win"   id="win-btn"   href="#">⊞ Download for Windows</a>
+    <a class="btn mac"   id="mac-btn"   href="#">⌘ Download for macOS</a>
+    <a class="btn linux" id="linux-btn" href="#">🐧 Download for Linux</a>
   </div>
-  <script>
-    fetch('/downloads.json')
-      .then(r => r.json())
-      .then(d => {
-        document.getElementById('ver').textContent = d.version;
-        document.getElementById('win-btn').href = d.windows;
-        document.getElementById('linux-btn').href = d.linux;
-        document.getElementById('mac-btn').href = d.mac;
+  <p class="hero-version" id="ver">Loading…</p>
+</div>
 
-        // check if hash exists
-        const hash = window.location.hash;
-        if(hash === "#windows"){
-          window.location.href = d.windows;
-        }
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">What it does</div>
+  <h2>Everything you need to stay accountable</h2>
+  <p class="subtitle">AEA bundles monitoring, enforcement, and AI insight into a single self-contained desktop app.</p>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Session Monitoring</h3>
+      <p>Tracks active app, browser domain, and webcam feed simultaneously throughout every focus session.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3>Policy Enforcement</h3>
+      <p>Configurable allow/deny lists per session type — set up distinct "study mode" or "work mode" profiles.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📷</div>
+      <h3>Facial Recognition</h3>
+      <p>Detects emotions and presence via webcam using DeepFace, so absence and distraction are caught automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔔</div>
+      <h3>Real-time Alerts</h3>
+      <p>Native desktop notifications fire the moment a policy violation is detected — no lag, no missed events.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>AI Query</h3>
+      <p>Ask natural-language questions about your sessions. Powered by Groq (primary) with an Ollama offline fallback.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📈</div>
+      <h3>Dashboard</h3>
+      <p>Visualize session stats, focus score, timelines, and full historical data — all rendered locally in your browser.</p>
+    </div>
+  </div>
+</section>
 
-        if(hash === "#linux"){
-          window.location.href = d.linux;
-        }
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="section-label">How it works</div>
+  <h2>Architecture</h2>
+  <p class="subtitle">Four services communicate over HTTP. The Electron installer bundles them all — no manual setup required.</p>
+  <div class="arch-box">
+    <pre>
+┌──────────────────────────────────────────────────┐
+│        Dashboard  (React · port 5173 / 80)       │
+└──────────────────────┬───────────────────────────┘
+                       │ HTTP /api/*
+                       ▼
+┌──────────────────────────────────────────────────┐
+│          API Server  (Node.js · port 12039)      │
+│  sessions / apps / web / camera / AI query       │
+└───────────┬──────────────────────────────────────┘
+            │                     │ proxy
+            ▼                     ▼
+       MongoDB                Processing Engine
+      (port 27017)            (Python · port 12040)
+                              ├─ AppEngine
+                              ├─ WebsiteEngine
+                              └─ FacialEngine
+                                       │
+                               Groq API (primary)
+                               Ollama  (fallback)
+    </pre>
+  </div>
+</section>
 
-        if(hash === "#mac"){
-          window.location.href = d.mac;
+<!-- INSTALL -->
+<section id="install">
+  <div class="section-label">Get started</div>
+  <h2>Installation</h2>
+  <p class="subtitle">The Electron installer bundles MongoDB, the Node API server, and the Python processing engine — no external setup required.</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(event,'win')">Windows</button>
+    <button class="tab-btn" onclick="switchTab(event,'mac')">macOS</button>
+    <button class="tab-btn" onclick="switchTab(event,'linux')">Linux</button>
+  </div>
+
+  <!-- Windows -->
+  <div class="tab-panel active" id="tab-win">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Download the installer</h3>
+          <p>Get <code>AEA-Setup-1.0.0.exe</code> from the button above or the GitHub Releases page.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Run the installer</h3>
+          <p>Double-click the <code>.exe</code> and follow the setup wizard.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Launch AEA</h3>
+          <p>Open <strong>AEA</strong> from the desktop shortcut. On first launch, the app copies the bundled default configuration to <code>%APPDATA%\electron\.env</code> and starts all services automatically.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- macOS -->
+  <div class="tab-panel" id="tab-mac">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Download the disk image</h3>
+          <p>Get <code>AEA-1.0.0.dmg</code> from the button above or the GitHub Releases page.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Open and install</h3>
+          <p>Double-click the <code>.dmg</code>, then drag <strong>AEA</strong> into your Applications folder.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Launch AEA</h3>
+          <p>Open AEA from Applications. All bundled services start automatically on first launch.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Linux -->
+  <div class="tab-panel" id="tab-linux">
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Download the AppImage</h3>
+          <p>Get <code>AEA-1.0.0.AppImage</code> from the button above or the GitHub Releases page.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Make it executable and run</h3>
+          <pre class="code">chmod +x AEA-1.0.0.AppImage
+./AEA-1.0.0.AppImage</pre>
+        </div>
+      </div>
+    </div>
+    <div class="note">
+      <strong>Linux note:</strong> The AppImage bundles the Electron shell only. MongoDB, Node.js, and Python must be installed on the host system. Install <code>xdotool</code> for active window detection. Facial recognition requires a webcam.
+    </div>
+  </div>
+</section>
+
+<!-- DOCKER -->
+<section id="docker">
+  <div class="section-label">Containers</div>
+  <h2>Quick Start — Docker</h2>
+  <p class="subtitle">Spin up the full stack in three commands. Requires <a href="https://www.docker.com/products/docker-desktop/" target="_blank" style="color:var(--accent)">Docker Desktop</a>.</p>
+
+  <pre class="code">git clone https://github.com/UsaidMalik/AEA.git
+cd AEA
+docker compose up --build</pre>
+
+  <p style="margin-top:1.25rem;font-size:0.875rem;color:var(--muted);">On first run Docker builds all images, starts MongoDB and Ollama, and pulls <code>qwen2.5:latest</code> + <code>nomic-embed-text</code> (~4 GB).</p>
+
+  <div class="table-wrap" style="margin-top:1.5rem;">
+    <table>
+      <thead><tr><th>Service</th><th>URL</th></tr></thead>
+      <tbody>
+        <tr><td>Dashboard</td><td><code>http://localhost</code></td></tr>
+        <tr><td>API Server</td><td><code>http://localhost:12039</code></td></tr>
+        <tr><td>MongoDB Admin</td><td><code>http://localhost:8081</code></td></tr>
+        <tr><td>Ollama</td><td><code>http://localhost:11434</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <pre class="code">docker compose down      # stop, keep data volumes
+docker compose down -v   # stop and wipe all data</pre>
+</section>
+
+<!-- API REFERENCE -->
+<section id="api">
+  <div class="section-label">API Reference</div>
+  <h2>REST API</h2>
+  <p class="subtitle">The Node.js API server runs on port <code>12039</code> and exposes the following endpoints.</p>
+
+  <h3 style="margin-bottom:0.75rem;color:var(--muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;">Session Control</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST</code></td><td><code>/api/session/start</code></td><td>Start a monitoring session</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/session/stop</code></td><td>Stop the current session</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/session/status</code></td><td>Check if a session is active</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:1.75rem 0 0.75rem;color:var(--muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;">Data</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET</code></td><td><code>/api/sessions</code></td><td>List all sessions with stats</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/apps</code></td><td>Application events</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/web</code></td><td>Website visit events</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/camera-events</code></td><td>Emotion / presence events</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/configs</code></td><td>Saved session configurations</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/configs</code></td><td>Create a new configuration</td></tr>
+        <tr><td><code>DELETE</code></td><td><code>/api/configs/:id</code></td><td>Delete a configuration</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin:1.75rem 0 0.75rem;color:var(--muted);font-size:0.8rem;text-transform:uppercase;letter-spacing:0.08em;">AI</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>POST</code></td><td><code>/api/query</code></td><td>Natural language query about your sessions</td></tr>
+        <tr><td><code>GET</code></td><td><code>/api/rag/status</code></td><td>RAG index status</td></tr>
+        <tr><td><code>POST</code></td><td><code>/api/rag/reindex</code></td><td>Rebuild the RAG index</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack">
+  <div class="section-label">Tech Stack</div>
+  <h2>Built with</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th></tr></thead>
+      <tbody>
+        <tr><td>Frontend</td><td>React 19, TypeScript, Vite, Material-UI, Recharts</td></tr>
+        <tr><td>API</td><td>Node.js 20, Express 5</td></tr>
+        <tr><td>Processing</td><td>Python 3.11, Flask, OpenCV, DeepFace, TensorFlow</td></tr>
+        <tr><td>Database</td><td>MongoDB 7</td></tr>
+        <tr><td>LLM (primary)</td><td>Groq API — llama-3.1-8b-instant (free tier)</td></tr>
+        <tr><td>LLM (fallback)</td><td>Ollama — qwen2.5 + nomic-embed-text</td></tr>
+        <tr><td>Desktop</td><td>Electron, electron-builder</td></tr>
+        <tr><td>Container</td><td>Docker, Docker Compose, Nginx</td></tr>
+        <tr><td>CI</td><td>GitHub Actions</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>AEA — AI Accountable Executive Assistant &nbsp;·&nbsp;
+     <a href="https://github.com/UsaidMalik/AEA" target="_blank">GitHub</a> &nbsp;·&nbsp;
+     Open source
+  </p>
+</footer>
+
+<script>
+  // Tab switching
+  function switchTab(e, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    e.target.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  // Load download links
+  fetch('/downloads.json')
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('ver').textContent = 'Latest release: ' + d.version + '  ·  ' + d.date;
+      document.getElementById('win-btn').href   = d.windows;
+      document.getElementById('linux-btn').href = d.linux;
+      document.getElementById('mac-btn').href   = d.mac;
+
+      // Auto-download when triggered via hash (e.g. from company website)
+      const hash = window.location.hash;
+      const downloadMap = { '#windows': d.windows, '#linux': d.linux, '#mac': d.mac };
+      const directUrl = downloadMap[hash];
+
+      if (directUrl) {
+        // Trigger download without navigating away
+        const a = document.createElement('a');
+        a.href = directUrl;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        // Return to company website if we came from one
+        if (document.referrer) {
+          window.location.href = document.referrer;
+        } else {
+          document.getElementById('ver').textContent += ' — download started';
         }
-      })
-      .catch(err =>{
-        console.error("Failed to load download.json",  err);
-      });
-  </script>
+      }
+    })
+    .catch(err => console.error('Failed to load downloads.json', err));
+</script>
 </body>
 </html>
