@@ -14,6 +14,7 @@
             font-size: 1rem; font-weight: 600; }
     .win { background: #0078d4; color: #fff; }
     .linux { background: #e95420; color: #fff; }
+    .mac { background: #555; color: #fff; }
   </style>
 </head>
 <body>
@@ -22,6 +23,7 @@
   <div class="buttons">
     <a class="btn win" id="win-btn" href="#">Download for Windows</a>
     <a class="btn linux" id="linux-btn" href="#">Download for Linux</a>
+    <a class="btn mac" id="mac-btn" href="#">Download for macOS</a>
   </div>
   <script>
     fetch('/downloads.json')
@@ -30,6 +32,7 @@
         document.getElementById('ver').textContent = d.version;
         document.getElementById('win-btn').href = d.windows;
         document.getElementById('linux-btn').href = d.linux;
+        document.getElementById('mac-btn').href = d.mac;
 
         // check if hash exists
         const hash = window.location.hash;
@@ -39,6 +42,10 @@
 
         if(hash === "#linux"){
           window.location.href = d.linux;
+        }
+
+        if(hash === "#mac"){
+          window.location.href = d.mac;
         }
       })
       .catch(err =>{
