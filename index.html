@@ -30,6 +30,19 @@
         document.getElementById('ver').textContent = d.version;
         document.getElementById('win-btn').href = d.windows;
         document.getElementById('linux-btn').href = d.linux;
+
+        // check if hash exists
+        const hash = window.location.hash;
+        if(hash === "#windows"){
+          window.location.href = d.windows;
+        }
+
+        if(hash === "#linux"){
+          window.location.href = d.linux;
+        }
+      })
+      .catch(err =>{
+        console.error("Failed to load download.json",  err);
       });
   </script>
 </body>
